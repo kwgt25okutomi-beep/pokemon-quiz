@@ -251,7 +251,7 @@
           <span class="card-front-idx">${card.displayIdx}</span>
           <span class="card-front-hint">？</span>
         </div>
-        <div class="card-back">
+        <div class="card-face card-back">
           <div class="card-char">${card.char}</div>
           <div class="card-timer-bar">
             <div class="card-timer-fill"></div>

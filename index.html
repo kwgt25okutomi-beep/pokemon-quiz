@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -7,9 +8,12 @@
   <meta name="description" content="ポケモンの名前を当てる伏字・シャッフルクイズゲーム！並び順そのままモードとアナグラムのハードモードで全世代のポケモンに挑戦しよう！">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;700;800;900&family=Outfit:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;700;800;900&family=Outfit:wght@600;700;800;900&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
   <div class="pokedex-app">
     <!-- ポケモン図鑑トップヘッダー（センサーランプ） -->
@@ -117,15 +121,8 @@
       <section class="answer-section">
         <form id="answerForm" class="answer-form" autocomplete="off" onsubmit="return false;">
           <div class="input-wrapper">
-            <input 
-              type="text" 
-              id="answerInput" 
-              placeholder="ポケモンのなまえ（ひらがな・カタカナ）" 
-              autocapitalize="off" 
-              autocorrect="off" 
-              spellcheck="false"
-              required
-            >
+            <input type="text" id="answerInput" placeholder="ポケモンのなまえ" autocapitalize="off" autocorrect="off"
+              spellcheck="false" required>
             <button type="button" id="clearInputBtn" class="clear-btn hidden" title="クリア">×</button>
           </div>
           <button type="submit" id="submitBtn" class="submit-btn">
@@ -202,4 +199,5 @@
   <script src="pokemon_data.js"></script>
   <script src="app.js"></script>
 </body>
+
 </html>

@@ -495,7 +495,9 @@ body {
 }
 
 /* カードの表面（伏字）と裏面（文字）共通 */
-.card-face {
+.card-face,
+.card-back,
+.card-front {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -513,8 +515,14 @@ body {
 
 /* 表面：モンスターボール風伏字デザイン */
 .card-front {
+  transform: rotateY(0deg);
   background: linear-gradient(180deg, #ef4444 0%, #ef4444 48%, #1e293b 48%, #1e293b 52%, #f8fafc 52%, #f8fafc 100%);
   border: 2px solid #ffffff;
+  z-index: 2;
+}
+
+.poke-card.flipped .card-front {
+  z-index: 1;
 }
 
 .card-front::after {
@@ -559,6 +567,11 @@ body {
   flex-direction: column;
   justify-content: space-between;
   padding: 4px 2px 3px;
+  z-index: 1;
+}
+
+.poke-card.flipped .card-back {
+  z-index: 2;
 }
 
 .card-char {
