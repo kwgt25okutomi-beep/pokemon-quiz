@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>ポケモンダレダ！？ - ポケモン伏字・シャッフルクイズ</title>
+  <meta name="description" content="ポケモンの名前を当てる伏字・シャッフルクイズゲーム！並び順そのままモードとアナグラムのハードモードで全世代のポケモンに挑戦しよう！">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;700;800;900&family=Outfit:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="pokedex-app">
+    <!-- ポケモン図鑑トップヘッダー（センサーランプ） -->
+    <header class="pokedex-header">
+      <div class="sensor-cluster">
+        <div class="big-blue-sensor" id="sensorLight">
+          <div class="sensor-glare"></div>
+        </div>
+        <div class="mini-lights">
+          <span class="mini-light red"></span>
+          <span class="mini-light yellow"></span>
+          <span class="mini-light green"></span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button id="soundToggleBtn" class="icon-btn" title="サウンド切り替え" aria-label="サウンド切り替え">
+          <span id="soundIcon">🔊</span>
+        </button>
+        <div class="streak-badge" title="連続正解数">
+          <span class="streak-icon">🔥</span>
+          <span id="streakCount">0</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- メインコンテンツフレーム -->
+    <main class="pokedex-body">
+      <!-- タイトルロゴ -->
+      <div class="title-area">
+        <div class="logo-wrapper">
+          <span class="logo-pokeball-icon"></span>
+          <h1 class="game-title">ポケモンダレダ！？</h1>
+        </div>
+        <p class="game-subtitle">POKÉ-NAME SHUFFLE QUIZ</p>
+      </div>
+
+      <!-- 設定・フィルタコントロール -->
+      <section class="controls-panel" aria-label="ゲーム設定">
+        <!-- 難易度・モード選択 -->
+        <div class="mode-selector-group">
+          <span class="control-label">出題モード:</span>
+          <div class="mode-buttons" role="radiogroup">
+            <button type="button" class="mode-btn active" id="modeNormalBtn" data-mode="normal">
+              <span class="mode-icon">🎯</span>
+              <span class="mode-text">
+                <strong>ノーマル</strong>
+                <small>並びそのまま</small>
+              </span>
+            </button>
+            <button type="button" class="mode-btn" id="modeHardBtn" data-mode="hard">
+              <span class="mode-icon">🌀</span>
+              <span class="mode-text">
+                <strong>ハード</strong>
+                <small>ぐちゃぐちゃ並び替え</small>
+              </span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 世代フィルター -->
+        <div class="filter-group">
+          <label for="genSelect" class="control-label">出現世代:</label>
+          <div class="select-wrapper">
+            <select id="genSelect">
+              <option value="all">ぜんこく図鑑（全1,025匹）</option>
+              <option value="1">第1世代: カントー (No.0001〜0151)</option>
+              <option value="2">第2世代: ジョウト (No.0152〜0251)</option>
+              <option value="3">第3世代: ホウエン (No.0252〜0386)</option>
+              <option value="4">第4世代: シンオウ (No.0387〜0493)</option>
+              <option value="5">第5世代: イッシュ (No.0494〜0649)</option>
+              <option value="6">第6世代: カロス (No.0650〜0721)</option>
+              <option value="7">第7世代: アローラ (No.0722〜0809)</option>
+              <option value="8">第8世代: ガラル (No.0810〜0905)</option>
+              <option value="9">第9世代: パルデア (No.0906〜1025)</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <!-- スクリーンエリア（液晶画面風デザイン） -->
+      <section class="pokedex-screen" aria-label="クイズ画面">
+        <div class="screen-meta">
+          <span class="badge gen-badge" id="currentGenBadge">第1世代</span>
+          <span class="badge length-badge" id="currentLengthBadge">5文字</span>
+          <span class="mode-tag" id="currentModeTag">🎯 ならび順そのまま</span>
+        </div>
+
+        <div class="screen-instruction">
+          <span class="pulse-dot"></span>
+          <span id="instructionText">パネルをタップすると3秒間だけ文字が見えるぞ！</span>
+        </div>
+
+        <!-- カード／パネル配置エリア -->
+        <div class="cards-container" id="cardsContainer">
+          <!-- JSで動的生成 -->
+        </div>
+
+        <!-- アナグラムモード警告/ガイド -->
+        <div class="shuffle-alert hidden" id="shuffleAlert">
+          <span>⚠️ 文字の並びがバラバラにシャッフルされています！</span>
+        </div>
+      </section>
+
+      <!-- 回答フォームエリア -->
+      <section class="answer-section">
+        <form id="answerForm" class="answer-form" autocomplete="off" onsubmit="return false;">
+          <div class="input-wrapper">
+            <input 
+              type="text" 
+              id="answerInput" 
+              placeholder="ポケモンのなまえ（ひらがな・カタカナ）" 
+              autocapitalize="off" 
+              autocorrect="off" 
+              spellcheck="false"
+              required
+            >
+            <button type="button" id="clearInputBtn" class="clear-btn hidden" title="クリア">×</button>
+          </div>
+          <button type="submit" id="submitBtn" class="submit-btn">
+            <span class="btn-ball-icon"></span>
+            <span>こたえる！</span>
+          </button>
+        </form>
+
+        <!-- メッセージフィードバックエリア -->
+        <div class="feedback-msg" id="feedbackMsg" aria-live="polite"></div>
+
+        <!-- ボトム操作ボタン -->
+        <div class="action-buttons">
+          <button type="button" id="skipBtn" class="action-btn skip-btn">
+            <span>⏭️</span> つぎのポケモン
+          </button>
+          <button type="button" id="giveupBtn" class="action-btn giveup-btn">
+            <span>💡</span> こたえをみる
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <footer class="pokedex-footer">
+      <p>© Pokémon Quiz App - Fan-made Web Tool</p>
+    </footer>
+  </div>
+
+  <!-- 正解・結果モーダルダイアログ -->
+  <div class="modal-overlay hidden" id="resultModal" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <div class="modal-header-banner" id="modalBanner">
+        <span class="modal-badge-icon" id="modalIcon">🎉</span>
+        <h2 id="modalTitle">つかまえた！（せいかい！）</h2>
+      </div>
+
+      <div class="pokemon-showcase">
+        <div class="artwork-frame">
+          <div class="artwork-bg-glow"></div>
+          <img id="modalPokemonImg" class="pokemon-artwork" src="" alt="ポケモンの画像" loading="lazy">
+          <div class="artwork-loader hidden" id="artworkLoader"></div>
+        </div>
+        <div class="pokemon-details">
+          <span class="dex-no" id="modalDexNo">No.0025</span>
+          <h3 class="pokemon-name" id="modalPokemonName">ピカチュウ</h3>
+          <div class="pokemon-tags">
+            <span class="tag" id="modalPokemonGen">第1世代</span>
+            <span class="tag" id="modalPokemonLength">5文字</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-stats">
+        <div class="stat-box">
+          <span class="stat-label">現在の連勝記録</span>
+          <span class="stat-val" id="modalStreakVal">1</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label">挑戦モード</span>
+          <span class="stat-val" id="modalModeVal">ノーマル</span>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" id="nextPokemonBtn" class="modal-next-btn">
+          <span class="btn-ball-icon"></span>
+          <span>つぎのポケモンへ進む！</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- スクリプト読み込み -->
+  <script src="pokemon_data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
