@@ -249,7 +249,6 @@
       cardEl.innerHTML = `
         <div class="card-face card-front">
           <span class="card-front-idx">${card.displayIdx}</span>
-          <span class="card-front-hint">？</span>
         </div>
         <div class="card-face card-back">
           <div class="card-char">${card.char}</div>
